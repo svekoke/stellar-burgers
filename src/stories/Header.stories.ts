@@ -1,29 +1,58 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { AppHeaderUI } from '../components/ui/app-header/app-header';
 
-import { AppHeaderUI } from '@ui';
-
-const meta = {
-  title: 'Example/Header',
-  component: AppHeaderUI,
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
-  tags: ['autodocs'],
-  parameters: {
-    // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
-    layout: 'fullscreen'
-  }
-} satisfies Meta<typeof AppHeaderUI>;
+const meta: Meta<typeof AppHeaderUI> = {
+  title: 'Components/AppHeader',
+  component: AppHeaderUI
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AppHeaderUI>;
 
-export const LoggedIn: Story = {
+export const Default: Story = {
   args: {
-    userName: 'John Doe'
+    userName: 'Гость',
+    onConstructorClick: () => {},
+    onFeedClick: () => {},
+    onProfileClick: () => {},
+    isConstructorActive: false,
+    isFeedActive: false,
+    isProfileActive: false
   }
 };
 
-export const LoggedOut: Story = {
+export const ConstructorActive: Story = {
   args: {
-    userName: undefined
+    userName: 'Гость',
+    onConstructorClick: () => {},
+    onFeedClick: () => {},
+    onProfileClick: () => {},
+    isConstructorActive: true,
+    isFeedActive: false,
+    isProfileActive: false
+  }
+};
+
+export const FeedActive: Story = {
+  args: {
+    userName: 'Гость',
+    onConstructorClick: () => {},
+    onFeedClick: () => {},
+    onProfileClick: () => {},
+    isConstructorActive: false,
+    isFeedActive: true,
+    isProfileActive: false
+  }
+};
+
+export const ProfileActive: Story = {
+  args: {
+    userName: 'Гость',
+    onConstructorClick: () => {},
+    onFeedClick: () => {},
+    onProfileClick: () => {},
+    isConstructorActive: false,
+    isFeedActive: false,
+    isProfileActive: true
   }
 };

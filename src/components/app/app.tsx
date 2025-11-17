@@ -1,6 +1,10 @@
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import "../../index.css";
-import styles from "./app.module.css";
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import '../../index.css';
+import styles from './app.module.css';
+
+import { useEffect } from 'react';
+import { useAppDispatch } from '../../services/store';
+import { getUser } from '../../slices/userSlice';
 
 import {
   ConstructorPage,
@@ -11,16 +15,16 @@ import {
   ForgotPassword,
   ResetPassword,
   Profile,
-  ProfileOrders,
-} from "@pages";
+  ProfileOrders
+} from '@pages';
 
 import {
   AppHeader,
   IngredientDetails,
   Modal,
   OrderInfo,
-  SecureRoute,
-} from "@components";
+  SecureRoute
+} from '@components';
 
 const App = () => {
   const location = useLocation();
@@ -31,6 +35,12 @@ const App = () => {
 
   const closeModal = () => navigate(-1);
 
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, [dispatch]);
+
   return (
     <div className={styles.app}>
       <AppHeader />
@@ -38,26 +48,26 @@ const App = () => {
       {/* ОСНОВНЫЕ РОУТЫ */}
       <Routes location={state?.background || location}>
         {/* публичные */}
-        <Route path="/" element={<ConstructorPage />} />
-        <Route path="/feed" element={<Feed />} />
-        <Route path="/feed/:number" element={<OrderInfo />} />
+        <Route path='/' element={<ConstructorPage />} />
+        <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfo />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
 
-        <Route path="/ingredients/:id" element={<IngredientDetails />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
 
         {/* защищённые маршруты */}
         <Route element={<SecureRoute />}>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile/orders" element={<ProfileOrders />} />
-          <Route path="/profile/orders/:number" element={<OrderInfo />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/profile/orders' element={<ProfileOrders />} />
+          <Route path='/profile/orders/:number' element={<OrderInfo />} />
         </Route>
 
         {/* 404 */}
-        <Route path="*" element={<NotFound404 />} />
+        <Route path='*' element={<NotFound404 />} />
       </Routes>
 
       {/* ===================== МОДАЛКИ ===================== */}
@@ -65,9 +75,9 @@ const App = () => {
         <Routes>
           {/* Ингредиент */}
           <Route
-            path="/ingredients/:id"
+            path='/ingredients/:id'
             element={
-              <Modal title="Описание ингредиента" onClose={closeModal}>
+              <Modal title='Описание ингредиента' onClose={closeModal}>
                 <IngredientDetails />
               </Modal>
             }
@@ -75,9 +85,9 @@ const App = () => {
 
           {/* Заказ в общей ленте */}
           <Route
-            path="/feed/:number"
+            path='/feed/:number'
             element={
-              <Modal title="Заказ" onClose={closeModal}>
+              <Modal title='Заказ' onClose={closeModal}>
                 <OrderInfo />
               </Modal>
             }
@@ -85,10 +95,10 @@ const App = () => {
 
           {/* Заказ пользователя */}
           <Route
-            path="/profile/orders/:number"
+            path='/profile/orders/:number'
             element={
               <SecureRoute>
-                <Modal title="Заказ" onClose={closeModal}>
+                <Modal title='Заказ' onClose={closeModal}>
                   <OrderInfo />
                 </Modal>
               </SecureRoute>

@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { ReactNode } from "react";
+import { useAppSelector } from "../../services/store";
 
 interface SecureRouteProps {
   children?: ReactNode;
@@ -8,18 +9,20 @@ interface SecureRouteProps {
 export const SecureRoute = ({ children }: SecureRouteProps) => {
   const location = useLocation();
 
-  // Заглушка — позже заменим на реальную авторизацию
-  const isAuth = false;
+  const { isAuthenticated, isAuthChecked } = useAppSelector(
+    (state) => state.user
+  );
 
-  if (!isAuth) {
+  // Ждём ответа getUser
+  if (!isAuthChecked) return null;
+
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // если вызван как обёртка <SecureRoute>...</SecureRoute>
-  if (children) {
-    return <>{children}</>;
-  }
+  // если <SecureRoute>children</SecureRoute>
+  if (children) return <>{children}</>;
 
-  // если вызван через <Route element={<SecureRoute />}>
+  // если <Route element={<SecureRoute/>}>
   return <Outlet />;
 };

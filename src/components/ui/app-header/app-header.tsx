@@ -8,28 +8,45 @@ import {
   ProfileIcon
 } from '@zlden/react-developer-burger-ui-components';
 
-export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
+export const AppHeaderUI: FC<TAppHeaderUIProps> = ({
+  userName,
+  onConstructorClick,
+  onFeedClick,
+  onProfileClick,
+  isConstructorActive,
+  isFeedActive,
+  isProfileActive
+}) => (
   <header className={styles.header}>
     <nav className={`${styles.menu} p-4`}>
+
       <div className={styles.menu_part_left}>
-        <>
-          <BurgerIcon type={'primary'} />
-          <p className='text text_type_main-default ml-2 mr-10'>Конструктор</p>
-        </>
-        <>
-          <ListIcon type={'primary'} />
-          <p className='text text_type_main-default ml-2'>Лента заказов</p>
-        </>
+        <div className={styles.menu_item} onClick={onConstructorClick}>
+          <BurgerIcon type={isConstructorActive ? 'primary' : 'secondary'} />
+          <p className='text text_type_main-default ml-2 mr-10'>
+            Конструктор
+          </p>
+        </div>
+
+        <div className={styles.menu_item} onClick={onFeedClick}>
+          <ListIcon type={isFeedActive ? 'primary' : 'secondary'} />
+          <p className='text text_type_main-default ml-2'>
+            Лента заказов
+          </p>
+        </div>
       </div>
+
       <div className={styles.logo}>
         <Logo className='' />
       </div>
-      <div className={styles.link_position_last}>
-        <ProfileIcon type={'primary'} />
+
+      <div className={styles.link_position_last} onClick={onProfileClick}>
+        <ProfileIcon type={isProfileActive ? 'primary' : 'secondary'} />
         <p className='text text_type_main-default ml-2'>
           {userName || 'Личный кабинет'}
         </p>
       </div>
+
     </nav>
   </header>
 );
