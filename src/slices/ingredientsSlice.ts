@@ -1,21 +1,21 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getIngredientsApi } from "../utils/burger-api";
-import { TIngredient } from "../utils/types";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getIngredientsApi } from '../utils/burger-api';
+import { TIngredient } from '../utils/types';
 
 export const fetchIngredientsThunk = createAsyncThunk(
-  "ingredients/fetchIngredients",
+  'ingredients/fetchIngredients',
   async () => {
-    const ingredients = await getIngredientsApi(); // <-- возвращает массив
+    const ingredients = await getIngredientsApi();
     return ingredients;
   }
 );
 
 const ingredientsSlice = createSlice({
-  name: "ingredients",
+  name: 'ingredients',
   initialState: {
     items: [] as TIngredient[],
     loading: false,
-    error: null as string | null,
+    error: null as string | null
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -25,13 +25,13 @@ const ingredientsSlice = createSlice({
       })
       .addCase(fetchIngredientsThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload; // <-- правильно
+        state.items = action.payload;
       })
       .addCase(fetchIngredientsThunk.rejected, (state) => {
         state.loading = false;
-        state.error = "Ошибка загрузки";
+        state.error = 'Ошибка загрузки';
       });
-  },
+  }
 });
 
 export const selectIngredients = (state: any) => state.ingredients.items;

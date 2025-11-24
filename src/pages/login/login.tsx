@@ -28,7 +28,7 @@ export const Login: FC = () => {
       .then(() => {
         navigate(from, { replace: true });
       })
-      .catch(() => {}); // ошибку покажет errorText
+      .catch(() => {});
   };
 
   return (

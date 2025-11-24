@@ -11,11 +11,9 @@ export const BurgerConstructor: FC = () => {
   const dispatch = useAppDispatch();
 
   // данные из orderSlice
-  const {
-    constructorItems,
-    orderRequest,
-    orderModalData
-  } = useAppSelector((state) => state.order);
+  const { constructorItems, orderRequest, orderModalData } = useAppSelector(
+    (state) => state.order
+  );
 
   // данные из userSlice
   const { isAuthenticated } = useAppSelector((state) => state.user);
@@ -25,7 +23,7 @@ export const BurgerConstructor: FC = () => {
     // нельзя без булки
     if (!constructorItems.bun || orderRequest) return;
 
-    // если не авторизован → на логин
+    // если не авторизован то на логин
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -41,9 +39,7 @@ export const BurgerConstructor: FC = () => {
 
   // ПОДСЧЁТ ЦЕНЫ
   const price = useMemo(() => {
-    const bunPrice = constructorItems.bun
-      ? constructorItems.bun.price * 2
-      : 0;
+    const bunPrice = constructorItems.bun ? constructorItems.bun.price * 2 : 0;
 
     const ingredientsPrice = constructorItems.ingredients.reduce(
       (sum: number, item: TIngredient) => sum + item.price,

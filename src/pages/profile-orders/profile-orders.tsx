@@ -1,8 +1,18 @@
+import { FC, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { ProfileOrdersUI } from '@ui-pages';
-import { FC } from 'react';
+import {
+  fetchProfileOrdersThunk,
+  selectProfileOrders
+} from '../../slices/profileOrdersSlice';
 
 export const ProfileOrders: FC = () => {
-  const orders: any[] = []; // временно пусто
+  const dispatch = useAppDispatch();
+  const orders = useAppSelector(selectProfileOrders);
+
+  useEffect(() => {
+    dispatch(fetchProfileOrdersThunk());
+  }, [dispatch]);
 
   return <ProfileOrdersUI orders={orders} />;
 };

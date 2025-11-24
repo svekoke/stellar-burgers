@@ -1,6 +1,6 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { ReactNode } from "react";
-import { useAppSelector } from "../../services/store";
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { ReactNode } from 'react';
+import { useAppSelector } from '../../services/store';
 
 interface SecureRouteProps {
   children?: ReactNode;
@@ -13,16 +13,14 @@ export const SecureRoute = ({ children }: SecureRouteProps) => {
     (state) => state.user
   );
 
-  // Ждём ответа getUser
+  // ответ getUser
   if (!isAuthChecked) return null;
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
-  // если <SecureRoute>children</SecureRoute>
   if (children) return <>{children}</>;
 
-  // если <Route element={<SecureRoute/>}>
   return <Outlet />;
 };

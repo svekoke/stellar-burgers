@@ -8,7 +8,7 @@ export const IngredientsCategory = forwardRef<
   HTMLUListElement,
   TIngredientsCategoryProps
 >(({ title, titleRef, ingredients }, ref) => {
-  // Берём ингредиенты из конструктора
+  // ингредиенты из конструктора
   const constructorItems = useAppSelector(
     (state) => state.order.constructorItems
   );

@@ -6,10 +6,10 @@ import { updateUser } from '../../slices/userSlice';
 export const Profile: FC = () => {
   const dispatch = useAppDispatch();
 
-  // Берём реального пользователя 
-  const { user} = useAppSelector((state) => state.user);
+  // реальный пользователь
+  const { user } = useAppSelector((state) => state.user);
 
-  // логика стейта
+  // стейт
   const [formValue, setFormValue] = useState({
     name: '',
     email: '',
@@ -27,13 +27,13 @@ export const Profile: FC = () => {
     }
   }, [user]);
 
-  // проверки изменений 
+  // проверки
   const isFormChanged =
     formValue.name !== user?.name ||
     formValue.email !== user?.email ||
     !!formValue.password;
 
-  //  отправка действий
+  //  отправка
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     dispatch(updateUser(formValue));
@@ -50,7 +50,7 @@ export const Profile: FC = () => {
     });
   };
 
-  // input 
+  // input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValue((prevState) => ({
       ...prevState,

@@ -33,9 +33,8 @@ const initialState: UserState = {
   error: null
 };
 
-// =====================================================
 //  REGISTER
-// =====================================================
+
 export const registerUser = createAsyncThunk(
   'user/register',
   async (form: { email: string; password: string; name: string }) => {
@@ -48,9 +47,8 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// =====================================================
 //  LOGIN
-// =====================================================
+
 export const loginUser = createAsyncThunk(
   'user/login',
   async (form: { email: string; password: string }) => {
@@ -63,17 +61,15 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// =====================================================
 //  GET USER (при старте)
-// =====================================================
+
 export const getUser = createAsyncThunk('user/get', async () => {
   const res = await getUserApi();
   return res.user;
 });
 
-// =====================================================
 //  UPDATE USER
-// =====================================================
+
 export const updateUser = createAsyncThunk(
   'user/update',
   async (form: { name: string; email: string; password?: string }) => {
@@ -82,9 +78,8 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-// =====================================================
 //  LOGOUT
-// =====================================================
+
 export const logoutUser = createAsyncThunk('user/logout', async () => {
   await logoutApi();
 
@@ -92,18 +87,16 @@ export const logoutUser = createAsyncThunk('user/logout', async () => {
   deleteCookie('refreshToken');
 });
 
-// =====================================================
-//  SLICE (полное состояние, ошибки, запросы)
-// =====================================================
+// полное состояние, ошибки, запросы
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {},
 
   extraReducers: (builder) => {
-    // -------------------------------
     // REGISTER
-    // -------------------------------
+
     builder.addCase(registerUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -119,9 +112,8 @@ const userSlice = createSlice({
       state.error = 'Ошибка регистрации';
     });
 
-    // -------------------------------
     // LOGIN
-    // -------------------------------
+
     builder.addCase(loginUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -139,9 +131,8 @@ const userSlice = createSlice({
       state.isAuthChecked = true;
     });
 
-    // -------------------------------
     // GET USER (главная проверка при старте приложения)
-    // -------------------------------
+
     builder.addCase(getUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -158,9 +149,8 @@ const userSlice = createSlice({
       state.isAuthChecked = true;
     });
 
-    // -------------------------------
     // UPDATE USER
-    // -------------------------------
+
     builder.addCase(updateUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -174,9 +164,8 @@ const userSlice = createSlice({
       state.error = 'Ошибка обновления профиля';
     });
 
-    // -------------------------------
     // LOGOUT
-    // -------------------------------
+
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.user = null;
       state.isAuthenticated = false;

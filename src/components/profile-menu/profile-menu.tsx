@@ -18,10 +18,5 @@ export const ProfileMenu: FC = () => {
       .catch(() => {});
   };
 
-  return (
-    <ProfileMenuUI
-      handleLogout={handleLogout}
-      pathname={pathname}
-    />
-  );
+  return <ProfileMenuUI handleLogout={handleLogout} pathname={pathname} />;
 };

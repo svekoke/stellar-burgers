@@ -58,7 +58,7 @@ const orderSlice = createSlice({
       state.constructorItems.ingredients.splice(action.payload, 1);
     },
 
-    // поменять местами начинки 
+    // поменять местами начинки
     moveIngredient(
       state,
       action: PayloadAction<{ fromIndex: number; toIndex: number }>
@@ -69,7 +69,7 @@ const orderSlice = createSlice({
       items.splice(toIndex, 0, moved);
     },
 
-    // просто закрыть модалку
+    //закрыть модалку
     closeOrderModal(state) {
       state.orderModalData = null;
     }
@@ -83,8 +83,10 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.orderRequest = false;
-        state.orderModalData = action.payload;
-        // очищаем конструктор 
+
+        state.orderModalData = action.payload.order.number;
+
+        // очищение конструктора после заказа
         state.constructorItems = {
           bun: null,
           ingredients: []
@@ -103,4 +105,5 @@ export const {
   moveIngredient,
   closeOrderModal
 } = orderSlice.actions;
+
 export default orderSlice.reducer;
