@@ -33,43 +33,42 @@ const initialState: UserState = {
   error: null
 };
 
-//  REGISTER
-
+// REGISTER
 export const registerUser = createAsyncThunk(
   'user/register',
   async (form: { email: string; password: string; name: string }) => {
     const res = await registerUserApi(form);
 
+    // accessToken -> cookie
     setCookie('accessToken', res.accessToken);
-    setCookie('refreshToken', res.refreshToken);
+
+    // refreshToken -> localStorage  (ВАЖНО!)
+    localStorage.setItem('refreshToken', res.refreshToken);
 
     return res.user;
   }
 );
 
-//  LOGIN
-
+// LOGIN
 export const loginUser = createAsyncThunk(
   'user/login',
   async (form: { email: string; password: string }) => {
     const res = await loginUserApi(form);
 
     setCookie('accessToken', res.accessToken);
-    setCookie('refreshToken', res.refreshToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
 
     return res.user;
   }
 );
 
-//  GET USER (при старте)
-
+// GET USER
 export const getUser = createAsyncThunk('user/get', async () => {
   const res = await getUserApi();
   return res.user;
 });
 
-//  UPDATE USER
-
+// UPDATE USER
 export const updateUser = createAsyncThunk(
   'user/update',
   async (form: { name: string; email: string; password?: string }) => {
@@ -78,16 +77,13 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-//  LOGOUT
-
+// LOGOUT
 export const logoutUser = createAsyncThunk('user/logout', async () => {
   await logoutApi();
 
   deleteCookie('accessToken');
-  deleteCookie('refreshToken');
+  localStorage.removeItem('refreshToken');
 });
-
-// полное состояние, ошибки, запросы
 
 const userSlice = createSlice({
   name: 'user',
@@ -96,7 +92,6 @@ const userSlice = createSlice({
 
   extraReducers: (builder) => {
     // REGISTER
-
     builder.addCase(registerUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -113,7 +108,6 @@ const userSlice = createSlice({
     });
 
     // LOGIN
-
     builder.addCase(loginUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -131,8 +125,7 @@ const userSlice = createSlice({
       state.isAuthChecked = true;
     });
 
-    // GET USER (главная проверка при старте приложения)
-
+    // GET USER
     builder.addCase(getUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -150,7 +143,6 @@ const userSlice = createSlice({
     });
 
     // UPDATE USER
-
     builder.addCase(updateUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -165,7 +157,6 @@ const userSlice = createSlice({
     });
 
     // LOGOUT
-
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.user = null;
       state.isAuthenticated = false;

@@ -1,49 +1,61 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getOrdersApi } from '../utils/burger-api';
+import { getOrdersApi, getOrderByNumberApi } from '../utils/burger-api';
 import { TOrder } from '../utils/types';
 
 type ProfileOrdersState = {
   orders: TOrder[];
+  singleOrder: TOrder | null;
   loading: boolean;
   error: string | null;
 };
 
 const initialState: ProfileOrdersState = {
   orders: [],
+  singleOrder: null,
   loading: false,
   error: null
 };
 
 export const fetchProfileOrdersThunk = createAsyncThunk(
   'profileOrders/fetchProfileOrders',
-  async () => {
-    const orders = await getOrdersApi();
-    return orders;
+  async () => await getOrdersApi()
+);
+
+export const fetchProfileOrderByNumberThunk = createAsyncThunk(
+  'profileOrders/fetchProfileOrderByNumber',
+  async (number: number) => {
+    const res = await getOrderByNumberApi(number);
+    return res.orders[0];
   }
 );
 
 const profileOrdersSlice = createSlice({
   name: 'profileOrders',
   initialState,
-  reducers: {},
+  reducers: {
+    clearProfileSingleOrder(state) {
+      state.singleOrder = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfileOrdersThunk.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchProfileOrdersThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload;
       })
-      .addCase(fetchProfileOrdersThunk.rejected, (state) => {
-        state.loading = false;
-        state.error = 'Ошибка загрузки заказов пользователя';
+      .addCase(fetchProfileOrderByNumberThunk.fulfilled, (state, action) => {
+        state.singleOrder = action.payload;
       });
   }
 });
 
+export const { clearProfileSingleOrder } = profileOrdersSlice.actions;
+
 export const selectProfileOrders = (state: any) => state.profileOrders.orders;
-export const selectProfileOrdersState = (state: any) => state.profileOrders;
+export const selectProfileSingleOrder = (state: any) =>
+  state.profileOrders.singleOrder;
 
 export default profileOrdersSlice.reducer;

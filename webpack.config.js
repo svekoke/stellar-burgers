@@ -81,14 +81,18 @@ module.exports = {
       '@selectors': path.resolve(__dirname, './src/services/selectors')
     }
   },
-  output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'bundle.js'
-  },
-  devServer: {
-    static: path.join(__dirname, './dist'),
-    compress: true,
-    historyApiFallback: true,
-    port: 4000
+ output: {
+  path: path.resolve(__dirname, './dist'),
+  filename: 'bundle.js',
+  publicPath: '/'
+},
+
+devServer: {
+  static: path.join(__dirname, './dist'),
+  compress: true,
+  historyApiFallback: true,
+  port: 4000,
+  devMiddleware: {
+    publicPath: '/'
   }
 };

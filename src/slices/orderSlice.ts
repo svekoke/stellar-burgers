@@ -4,10 +4,10 @@ import { TIngredient } from '../utils/types';
 
 interface OrderState {
   orderRequest: boolean;
-  orderModalData: any | null;
+  orderModalData: number | null;
   constructorItems: {
     bun: TIngredient | null;
-    ingredients: TIngredient[];
+    ingredients: (TIngredient & { constructorId: string })[];
   };
   error: string | null;
 }
@@ -42,23 +42,23 @@ const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    // добавить ингредиент в конструктор
     addIngredient(state, action: PayloadAction<TIngredient>) {
       const ingredient = action.payload;
 
       if (ingredient.type === 'bun') {
         state.constructorItems.bun = ingredient;
       } else {
-        state.constructorItems.ingredients.push(ingredient);
+        state.constructorItems.ingredients.push({
+          ...ingredient,
+          constructorId: crypto.randomUUID()
+        });
       }
     },
 
-    // удалить начинку по индексу
     removeIngredient(state, action: PayloadAction<number>) {
       state.constructorItems.ingredients.splice(action.payload, 1);
     },
 
-    // поменять местами начинки
     moveIngredient(
       state,
       action: PayloadAction<{ fromIndex: number; toIndex: number }>
@@ -69,7 +69,6 @@ const orderSlice = createSlice({
       items.splice(toIndex, 0, moved);
     },
 
-    //закрыть модалку
     closeOrderModal(state) {
       state.orderModalData = null;
     }
@@ -86,7 +85,6 @@ const orderSlice = createSlice({
 
         state.orderModalData = action.payload.order.number;
 
-        // очищение конструктора после заказа
         state.constructorItems = {
           bun: null,
           ingredients: []

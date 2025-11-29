@@ -35,3 +35,9 @@
   align-items: center;
   margin: 0 auto;
 }
+
+.menu_item {
+  display: flex;
+  flex-direction: row; 
+  cursor: pointer;
+}

@@ -16,5 +16,6 @@ export const rootReducer = combineReducers({
   feed: feedReducer,
   profileOrders: profileOrdersReducer,
 
-  userOrdersFeed: ordersFeedReducer
+  //
+  ordersFeed: ordersFeedReducer
 });

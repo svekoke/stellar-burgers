@@ -29,25 +29,25 @@ import {
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // используется для отображения модалки поверх предыдущей страницы
-  const state = location.state as { background?: Location };
-
-  const closeModal = () => navigate(-1);
-
   const dispatch = useAppDispatch();
 
+  // модалки
+  const state = location.state as { background?: Location };
+  const closeModal = () => navigate(-1);
+
+  // === ИСПРАВЛЕНИЕ ОШИБКИ: не дёргаем getUser без refreshToken ===
   useEffect(() => {
-    dispatch(getUser());
+    const refresh = localStorage.getItem('refreshToken');
+    if (refresh) {
+      dispatch(getUser());
+    }
   }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
 
-      {/* ОСНОВНЫЕ РОУТЫ */}
       <Routes location={state?.background || location}>
-        {/* публичные */}
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route path='/feed/:number' element={<OrderInfo />} />
@@ -59,21 +59,18 @@ const App = () => {
 
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
 
-        {/* защищённые маршруты */}
         <Route element={<SecureRoute />}>
           <Route path='/profile' element={<Profile />} />
           <Route path='/profile/orders' element={<ProfileOrders />} />
           <Route path='/profile/orders/:number' element={<OrderInfo />} />
         </Route>
 
-        {/* 404 */}
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
-      {/* ===================== МОДАЛКИ ===================== */}
+      {/* модалки */}
       {state?.background && (
         <Routes>
-          {/* Ингредиент */}
           <Route
             path='/ingredients/:id'
             element={
@@ -83,7 +80,6 @@ const App = () => {
             }
           />
 
-          {/* Заказ в общей ленте */}
           <Route
             path='/feed/:number'
             element={
@@ -93,7 +89,6 @@ const App = () => {
             }
           />
 
-          {/* Заказ пользователя */}
           <Route
             path='/profile/orders/:number'
             element={

@@ -3,17 +3,23 @@ import { useAppDispatch, useAppSelector } from '../../services/store';
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
 
-import { fetchFeedThunk, selectFeedOrders } from '../../slices/feedSlice';
+import {
+  fetchFeedThunk,
+  selectFeed,
+  selectFeedOrders
+} from '../../slices/feedSlice';
 
 export const Feed: FC = () => {
   const dispatch = useAppDispatch();
+
   const orders = useAppSelector(selectFeedOrders);
+  const { loading } = useAppSelector(selectFeed);
 
   useEffect(() => {
     dispatch(fetchFeedThunk());
   }, [dispatch]);
 
-  if (!orders.length) {
+  if (loading) {
     return <Preloader />;
   }
 

@@ -34,7 +34,7 @@ export const BurgerIngredients: FC = () => {
     (item: TIngredient) => item.type === 'sauce'
   );
 
-  //ТАБЫ 
+  //ТАБЫ
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);

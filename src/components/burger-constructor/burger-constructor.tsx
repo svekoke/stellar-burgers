@@ -10,20 +10,15 @@ export const BurgerConstructor: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // данные из orderSlice
   const { constructorItems, orderRequest, orderModalData } = useAppSelector(
     (state) => state.order
   );
 
-  // данные из userSlice
   const { isAuthenticated } = useAppSelector((state) => state.user);
 
-  // КНОПКА "ОФОРМИТЬ ЗАКАЗ"
   const onOrderClick = () => {
-    // нельзя без булки
     if (!constructorItems.bun || orderRequest) return;
 
-    // если не авторизован то на логин
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -32,12 +27,10 @@ export const BurgerConstructor: FC = () => {
     dispatch(createOrder());
   };
 
-  // закрытие модалки заказа
   const closeOrderModalHandler = () => {
     dispatch(closeOrderModal());
   };
 
-  // ПОДСЧЁТ ЦЕНЫ
   const price = useMemo(() => {
     const bunPrice = constructorItems.bun ? constructorItems.bun.price * 2 : 0;
 
