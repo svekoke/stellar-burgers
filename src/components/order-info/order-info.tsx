@@ -8,10 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../services/store';
 
 import { TIngredient, TOrder } from '@utils-types';
 
-import {
-  selectIngredients,
-  fetchIngredientsThunk
-} from '../../slices/ingredientsSlice';
+import { selectIngredients } from '../../slices/ingredientsSlice';
 import { selectFeedOrders, fetchFeedThunk } from '../../slices/feedSlice';
 import {
   selectProfileOrders,
@@ -37,10 +34,7 @@ export const OrderInfo: FC = () => {
 
   const isProfileRoute = location.pathname.startsWith('/profile');
 
-  // === Загружаем всё, чего нет ===
   useEffect(() => {
-    if (!ingredients.length) dispatch(fetchIngredientsThunk());
-
     const existsInFeed = feedOrders.some((o: TOrder) => o.number === orderNum);
     const existsInProfile = profileOrders.some(
       (o: TOrder) => o.number === orderNum
@@ -65,14 +59,12 @@ export const OrderInfo: FC = () => {
     isProfileRoute
   ]);
 
-  // === Берём заказ из всех возможных источников ===
   const orderData: TOrder | null =
     feedOrders.find((o: TOrder) => o.number === orderNum) ||
     profileOrders.find((o: TOrder) => o.number === orderNum) ||
     orderByNumber ||
     null;
 
-  // === Формирование UI-данных ===
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 

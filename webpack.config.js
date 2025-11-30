@@ -95,4 +95,5 @@ devServer: {
   devMiddleware: {
     publicPath: '/'
   }
+}
 };

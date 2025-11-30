@@ -1,7 +1,7 @@
-// slices/ordersFeedSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getOrderByNumberApi } from '../utils/burger-api';
 import { TOrder } from '../utils/types';
+import { RootState } from '../services/store';
 
 interface OrdersFeedState {
   orders: TOrder[];
@@ -17,7 +17,6 @@ const initialState: OrdersFeedState = {
   orderByNumber: null
 };
 
-// === Грузим заказ по номеру ===
 export const fetchOrderByNumberThunk = createAsyncThunk(
   'ordersFeed/fetchOrderByNumber',
   async (number: number) => {
@@ -48,7 +47,7 @@ const ordersFeedSlice = createSlice({
   }
 });
 
-export const selectOrderByNumber = (state: any) =>
+export const selectOrderByNumber = (state: RootState) =>
   state.ordersFeed.orderByNumber;
 
 export const { connectUserOrders, disconnectUserOrders, setUserOrders } =

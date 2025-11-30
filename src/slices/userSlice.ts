@@ -15,20 +15,16 @@ interface User {
 
 interface UserState {
   user: User | null;
-
   isAuthenticated: boolean;
   isAuthChecked: boolean;
-
   request: boolean;
   error: string | null;
 }
 
 const initialState: UserState = {
   user: null,
-
   isAuthenticated: false,
   isAuthChecked: false,
-
   request: false,
   error: null
 };
@@ -39,10 +35,7 @@ export const registerUser = createAsyncThunk(
   async (form: { email: string; password: string; name: string }) => {
     const res = await registerUserApi(form);
 
-    // accessToken -> cookie
-    setCookie('accessToken', res.accessToken);
-
-    // refreshToken -> localStorage  (ВАЖНО!)
+    setCookie('accessToken', res.accessToken.replace('Bearer ', ''));
     localStorage.setItem('refreshToken', res.refreshToken);
 
     return res.user;
@@ -55,18 +48,25 @@ export const loginUser = createAsyncThunk(
   async (form: { email: string; password: string }) => {
     const res = await loginUserApi(form);
 
-    setCookie('accessToken', res.accessToken);
+    setCookie('accessToken', res.accessToken.replace('Bearer ', ''));
     localStorage.setItem('refreshToken', res.refreshToken);
 
     return res.user;
   }
 );
 
-// GET USER
-export const getUser = createAsyncThunk('user/get', async () => {
-  const res = await getUserApi();
-  return res.user;
-});
+// ✅ FIXED — GET USER без спама ошибок
+export const getUser = createAsyncThunk(
+  'user/get',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await getUserApi();
+      return res.user;
+    } catch (err) {
+      return rejectWithValue(null);
+    }
+  }
+);
 
 // UPDATE USER
 export const updateUser = createAsyncThunk(
@@ -80,7 +80,6 @@ export const updateUser = createAsyncThunk(
 // LOGOUT
 export const logoutUser = createAsyncThunk('user/logout', async () => {
   await logoutApi();
-
   deleteCookie('accessToken');
   localStorage.removeItem('refreshToken');
 });
@@ -91,7 +90,6 @@ const userSlice = createSlice({
   reducers: {},
 
   extraReducers: (builder) => {
-    // REGISTER
     builder.addCase(registerUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -107,7 +105,6 @@ const userSlice = createSlice({
       state.error = 'Ошибка регистрации';
     });
 
-    // LOGIN
     builder.addCase(loginUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -125,7 +122,6 @@ const userSlice = createSlice({
       state.isAuthChecked = true;
     });
 
-    // GET USER
     builder.addCase(getUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -142,7 +138,6 @@ const userSlice = createSlice({
       state.isAuthChecked = true;
     });
 
-    // UPDATE USER
     builder.addCase(updateUser.pending, (state) => {
       state.request = true;
       state.error = null;
@@ -156,7 +151,6 @@ const userSlice = createSlice({
       state.error = 'Ошибка обновления профиля';
     });
 
-    // LOGOUT
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.user = null;
       state.isAuthenticated = false;

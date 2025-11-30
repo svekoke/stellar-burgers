@@ -5,6 +5,7 @@ import styles from './app.module.css';
 import { useEffect } from 'react';
 import { useAppDispatch } from '../../services/store';
 import { getUser } from '../../slices/userSlice';
+import { fetchIngredientsThunk } from '../../slices/ingredientsSlice';
 
 import {
   ConstructorPage,
@@ -26,39 +27,89 @@ import {
   SecureRoute
 } from '@components';
 
+import { PublicRoute } from '../public-route/public-route';
+
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // модалки
+  // background хранит предыдущую страницу — используется для модалок
   const state = location.state as { background?: Location };
-  const closeModal = () => navigate(-1);
 
-  // === ИСПРАВЛЕНИЕ ОШИБКИ: не дёргаем getUser без refreshToken ===
+  // Умное закрытие модального окна
+  const closeModal = () => {
+    if (state?.background) {
+      // Если модалка открыта как модалка — вернуться назад
+      navigate(-1);
+    } else {
+      // Если страница открыта напрямую — перейти на нужный список
+      if (location.pathname.startsWith('/profile/orders/')) {
+        navigate('/profile/orders');
+      } else if (location.pathname.startsWith('/feed/')) {
+        navigate('/feed');
+      } else if (location.pathname.startsWith('/ingredients/')) {
+        navigate('/');
+      } else {
+        navigate('/');
+      }
+    }
+  };
+
   useEffect(() => {
     const refresh = localStorage.getItem('refreshToken');
-    if (refresh) {
-      dispatch(getUser());
-    }
+    if (refresh) dispatch(getUser());
+    dispatch(fetchIngredientsThunk());
   }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
 
+      {/* Основные роуты */}
       <Routes location={state?.background || location}>
         <Route path='/' element={<ConstructorPage />} />
+
         <Route path='/feed' element={<Feed />} />
         <Route path='/feed/:number' element={<OrderInfo />} />
 
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
+        {/* PUBLIC ROUTES */}
+        <Route
+          path='/login'
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path='/register'
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path='/forgot-password'
+          element={
+            <PublicRoute>
+              <ForgotPassword />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path='/reset-password'
+          element={
+            <PublicRoute>
+              <ResetPassword />
+            </PublicRoute>
+          }
+        />
 
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
 
+        {/* SECURE ROUTES */}
         <Route element={<SecureRoute />}>
           <Route path='/profile' element={<Profile />} />
           <Route path='/profile/orders' element={<ProfileOrders />} />
@@ -68,7 +119,7 @@ const App = () => {
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
-      {/* модалки */}
+      {/* МОДАЛКИ */}
       {state?.background && (
         <Routes>
           <Route

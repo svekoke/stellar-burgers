@@ -1,22 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getIngredientsApi } from '../utils/burger-api';
 import { TIngredient } from '../utils/types';
+import { RootState } from '../services/store'; // ← важно добавить
 
 export const fetchIngredientsThunk = createAsyncThunk(
   'ingredients/fetchIngredients',
-  async () => {
-    const ingredients = await getIngredientsApi();
-    return ingredients;
-  }
+  getIngredientsApi
 );
+
+const initialState = {
+  items: [] as TIngredient[],
+  loading: false,
+  error: null as string | null
+};
 
 const ingredientsSlice = createSlice({
   name: 'ingredients',
-  initialState: {
-    items: [] as TIngredient[],
-    loading: false,
-    error: null as string | null
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -34,8 +34,11 @@ const ingredientsSlice = createSlice({
   }
 });
 
-export const selectIngredients = (state: any) => state.ingredients.items;
-export const selectIngredientsLoading = (state: any) =>
+//Селекторы
+
+export const selectIngredients = (state: RootState) => state.ingredients.items;
+
+export const selectIngredientsLoading = (state: RootState) =>
   state.ingredients.loading;
 
 export default ingredientsSlice.reducer;

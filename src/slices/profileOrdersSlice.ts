@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getOrdersApi, getOrderByNumberApi } from '../utils/burger-api';
 import { TOrder } from '../utils/types';
+import { RootState } from '../services/store';
 
 type ProfileOrdersState = {
   orders: TOrder[];
@@ -18,7 +19,7 @@ const initialState: ProfileOrdersState = {
 
 export const fetchProfileOrdersThunk = createAsyncThunk(
   'profileOrders/fetchProfileOrders',
-  async () => await getOrdersApi()
+  getOrdersApi
 );
 
 export const fetchProfileOrderByNumberThunk = createAsyncThunk(
@@ -54,8 +55,12 @@ const profileOrdersSlice = createSlice({
 
 export const { clearProfileSingleOrder } = profileOrdersSlice.actions;
 
-export const selectProfileOrders = (state: any) => state.profileOrders.orders;
-export const selectProfileSingleOrder = (state: any) =>
+// Селекторы
+
+export const selectProfileOrders = (state: RootState) =>
+  state.profileOrders.orders;
+
+export const selectProfileSingleOrder = (state: RootState) =>
   state.profileOrders.singleOrder;
 
 export default profileOrdersSlice.reducer;

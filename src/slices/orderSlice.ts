@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { orderBurgerApi } from '../utils/burger-api';
 import { TIngredient } from '../utils/types';
+import { RootState } from '../services/store';
 
 interface OrderState {
   orderRequest: boolean;
@@ -25,12 +26,12 @@ const initialState: OrderState = {
 export const createOrder = createAsyncThunk(
   'order/createOrder',
   async (_, { getState }) => {
-    const state: any = getState();
+    const state = getState() as RootState;
     const items = state.order.constructorItems;
 
     const ids = [
       items.bun?._id,
-      ...items.ingredients.map((i: TIngredient) => i._id),
+      ...items.ingredients.map((i) => i._id),
       items.bun?._id
     ].filter(Boolean) as string[];
 
@@ -42,16 +43,26 @@ const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    addIngredient(state, action: PayloadAction<TIngredient>) {
-      const ingredient = action.payload;
+    addIngredient: {
+      reducer(
+        state,
+        action: PayloadAction<TIngredient & { constructorId: string }>
+      ) {
+        const ingredient = action.payload;
 
-      if (ingredient.type === 'bun') {
-        state.constructorItems.bun = ingredient;
-      } else {
-        state.constructorItems.ingredients.push({
-          ...ingredient,
-          constructorId: crypto.randomUUID()
-        });
+        if (ingredient.type === 'bun') {
+          state.constructorItems.bun = ingredient;
+        } else {
+          state.constructorItems.ingredients.push(ingredient);
+        }
+      },
+      prepare(ingredient: TIngredient) {
+        return {
+          payload: {
+            ...ingredient,
+            constructorId: crypto.randomUUID()
+          }
+        };
       }
     },
 
