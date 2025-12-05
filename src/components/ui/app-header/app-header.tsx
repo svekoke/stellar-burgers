@@ -9,7 +9,12 @@ import {
 } from '@zlden/react-developer-burger-ui-components';
 import { NavLink } from 'react-router-dom';
 
-export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
+export const AppHeaderUI: FC<TAppHeaderUIProps> = ({
+  userName,
+  isConstructorActive,
+  isFeedActive,
+  isProfileActive
+}) => (
   <header className={styles.header}>
     <nav className={`${styles.menu} p-4`}>
       <div className={styles.menu_part_left}>
