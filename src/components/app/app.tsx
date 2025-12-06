@@ -57,8 +57,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    const refresh = localStorage.getItem('refreshToken');
-    if (refresh) dispatch(getUser());
+    dispatch(getUser());
     dispatch(fetchIngredientsThunk());
   }, [dispatch]);
 

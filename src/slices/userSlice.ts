@@ -55,7 +55,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// ✅ FIXED — GET USER без спама ошибок
+// FIXED — GET USER без спама ошибок
 export const getUser = createAsyncThunk(
   'user/get',
   async (_, { rejectWithValue }) => {
