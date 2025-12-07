@@ -3,14 +3,14 @@ import { getOrdersApi, getOrderByNumberApi } from '../utils/burger-api';
 import { TOrder } from '../utils/types';
 import { RootState } from '../services/store';
 
-type ProfileOrdersState = {
+export type ProfileOrdersState = {
   orders: TOrder[];
   singleOrder: TOrder | null;
   loading: boolean;
   error: string | null;
 };
 
-const initialState: ProfileOrdersState = {
+export const initialState: ProfileOrdersState = {
   orders: [],
   singleOrder: null,
   loading: false,
@@ -54,8 +54,6 @@ const profileOrdersSlice = createSlice({
 });
 
 export const { clearProfileSingleOrder } = profileOrdersSlice.actions;
-
-// Селекторы
 
 export const selectProfileOrders = (state: RootState) =>
   state.profileOrders.orders;

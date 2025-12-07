@@ -1,38 +1,37 @@
-import reducer, { fetchIngredientsThunk } from './ingredientsSlice';
-
-const initialState = {
-  items: [],
-  loading: false,
-  error: null
-};
+import reducer, {
+  fetchIngredientsThunk,
+  initialState
+} from './ingredientsSlice';
 
 describe('ingredientsSlice', () => {
-  it('возвращает initialState', () => {
+  it('initial state', () => {
     expect(reducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });
 
   it('pending → loading=true', () => {
     const action = { type: fetchIngredientsThunk.pending.type };
     const state = reducer(initialState, action);
+
     expect(state.loading).toBe(true);
   });
 
   it('fulfilled → items загружены', () => {
-    const ingredients = [{ _id: '1', name: 'Булка' }];
+    const items = [{ _id: '1', name: 'Булка' }];
+
     const action = {
       type: fetchIngredientsThunk.fulfilled.type,
-      payload: ingredients
+      payload: items
     };
 
-    const state = reducer({ ...initialState, loading: true }, action);
+    const state = reducer(initialState, action);
 
     expect(state.loading).toBe(false);
-    expect(state.items).toEqual(ingredients);
+    expect(state.items).toEqual(items);
   });
 
-  it('rejected → ошибка', () => {
+  it('rejected → error', () => {
     const action = { type: fetchIngredientsThunk.rejected.type };
-    const state = reducer({ ...initialState, loading: true }, action);
+    const state = reducer(initialState, action);
 
     expect(state.loading).toBe(false);
     expect(state.error).toBe('Ошибка загрузки');

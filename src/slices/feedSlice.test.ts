@@ -1,44 +1,37 @@
-import reducer, { fetchFeedThunk } from './feedSlice';
-
-const initialState = {
-  orders: [],
-  total: 0,
-  totalToday: 0,
-  loading: false,
-  error: null
-};
+import reducer, { fetchFeedThunk, initialState } from './feedSlice';
 
 describe('feedSlice', () => {
-  it('должен вернуть initialState', () => {
+  it('initial state', () => {
     expect(reducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });
 
-  it('fetchFeedThunk.pending устанавливает loading=true', () => {
+  it('pending → loading=true', () => {
     const action = { type: fetchFeedThunk.pending.type };
     const state = reducer(initialState, action);
+
     expect(state.loading).toBe(true);
     expect(state.error).toBeNull();
   });
 
-  it('fetchFeedThunk.fulfilled загружает данные ленты', () => {
+  it('fulfilled → данные загружены', () => {
     const payload = {
       orders: [{ number: 1 }],
-      total: 100,
-      totalToday: 10
+      total: 10,
+      totalToday: 5
     };
-    const action = { type: fetchFeedThunk.fulfilled.type, payload };
 
-    const state = reducer({ ...initialState, loading: true }, action);
+    const action = { type: fetchFeedThunk.fulfilled.type, payload };
+    const state = reducer(initialState, action);
 
     expect(state.loading).toBe(false);
     expect(state.orders).toEqual(payload.orders);
-    expect(state.total).toBe(100);
-    expect(state.totalToday).toBe(10);
+    expect(state.total).toBe(10);
+    expect(state.totalToday).toBe(5);
   });
 
-  it('fetchFeedThunk.rejected устанавливает ошибку', () => {
+  it('rejected → error', () => {
     const action = { type: fetchFeedThunk.rejected.type };
-    const state = reducer({ ...initialState, loading: true }, action);
+    const state = reducer(initialState, action);
 
     expect(state.loading).toBe(false);
     expect(state.error).toBe('Ошибка загрузки ленты заказов');

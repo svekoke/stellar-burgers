@@ -1,25 +1,20 @@
 import reducer, {
   fetchProfileOrdersThunk,
   fetchProfileOrderByNumberThunk,
-  clearProfileSingleOrder
+  clearProfileSingleOrder,
+  initialState
 } from './profileOrdersSlice';
 
-// Полный мок TOrder
-const mockOrder = {
-  _id: '1',
-  status: 'done',
-  name: 'Тестовый заказ',
-  createdAt: '2023-01-01',
-  updatedAt: '2023-01-01',
-  number: 1,
-  ingredients: ['123', '456']
-};
+import { TOrder } from '../utils/types';
 
-const initialState = {
-  orders: [] as (typeof mockOrder)[],
-  singleOrder: null as typeof mockOrder | null,
-  loading: false,
-  error: null as string | null
+const mockOrder: TOrder = {
+  _id: 'order1',
+  status: 'done',
+  name: 'Test Order',
+  createdAt: '2024-01-01T12:00:00Z',
+  updatedAt: '2024-01-01T12:00:00Z',
+  number: 123,
+  ingredients: ['item1', 'item2']
 };
 
 describe('profileOrdersSlice', () => {
@@ -30,24 +25,22 @@ describe('profileOrdersSlice', () => {
   it('pending → loading=true', () => {
     const action = { type: fetchProfileOrdersThunk.pending.type };
     const state = reducer(initialState, action);
-
     expect(state.loading).toBe(true);
   });
 
   it('fulfilled → orders загружены', () => {
-    const orders = [mockOrder];
     const action = {
       type: fetchProfileOrdersThunk.fulfilled.type,
-      payload: orders
+      payload: [mockOrder]
     };
 
     const state = reducer({ ...initialState, loading: true }, action);
 
     expect(state.loading).toBe(false);
-    expect(state.orders).toEqual(orders);
+    expect(state.orders).toEqual([mockOrder]);
   });
 
-  it('fetchProfileOrderByNumber.fulfilled → пишет singleOrder', () => {
+  it('fetchProfileOrderByNumberThunk.fulfilled → пишет singleOrder', () => {
     const action = {
       type: fetchProfileOrderByNumberThunk.fulfilled.type,
       payload: mockOrder

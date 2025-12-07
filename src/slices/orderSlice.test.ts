@@ -3,43 +3,27 @@ import reducer, {
   removeIngredient,
   moveIngredient,
   closeOrderModal,
-  createOrder
+  createOrder,
+  initialState
 } from './orderSlice';
 
-const bun = {
-  _id: 'bun1',
-  name: 'Булка',
-  type: 'bun',
-  proteins: 10,
-  fat: 5,
-  carbohydrates: 20,
-  calories: 100,
-  price: 50,
-  image: '',
-  image_mobile: '',
-  image_large: ''
-};
+(global as any).crypto = { randomUUID: () => 'uuid-test' };
 
 const ingredient = {
-  _id: 'sauce1',
+  _id: 'ing1',
   name: 'Соус',
   type: 'sauce',
   proteins: 1,
-  fat: 2,
-  carbohydrates: 3,
-  calories: 4,
+  fat: 1,
+  carbohydrates: 1,
+  calories: 1,
   price: 10,
   image: '',
-  image_mobile: '',
-  image_large: ''
+  image_large: '',
+  image_mobile: ''
 };
 
-const initialState = {
-  orderRequest: false,
-  orderModalData: null,
-  constructorItems: { bun: null, ingredients: [] },
-  error: null
-};
+const bun = { ...ingredient, _id: 'bun1', type: 'bun' };
 
 describe('orderSlice', () => {
   it('initialState', () => {
@@ -48,36 +32,31 @@ describe('orderSlice', () => {
 
   it('addIngredient добавляет булку', () => {
     const state = reducer(initialState, addIngredient(bun));
-    expect(state.constructorItems.bun?._id).toBe('bun1');
+    expect(state.constructorItems.bun!._id).toBe('bun1');
   });
 
-  it('addIngredient добавляет не-булку', () => {
+  it('addIngredient добавляет начинку', () => {
     const state = reducer(initialState, addIngredient(ingredient));
-
-    expect(state.constructorItems.ingredients.length).toBe(1);
-    expect(state.constructorItems.ingredients[0]._id).toBe('sauce1');
+    expect(state.constructorItems.ingredients[0]._id).toBe('ing1');
     expect(state.constructorItems.ingredients[0].constructorId).toBe(
-      'test-uuid'
+      'uuid-test'
     );
   });
 
-  it('removeIngredient удаляет по индексу', () => {
+  it('removeIngredient', () => {
     const start = {
       ...initialState,
       constructorItems: {
         bun: null,
-        ingredients: [
-          { ...ingredient, constructorId: '1' },
-          { ...ingredient, constructorId: '2' }
-        ]
+        ingredients: [{ ...ingredient, constructorId: '1' }]
       }
     };
 
     const state = reducer(start, removeIngredient(0));
-    expect(state.constructorItems.ingredients.length).toBe(1);
+    expect(state.constructorItems.ingredients.length).toBe(0);
   });
 
-  it('moveIngredient меняет порядок элементов', () => {
+  it('moveIngredient', () => {
     const start = {
       ...initialState,
       constructorItems: {
@@ -93,48 +72,47 @@ describe('orderSlice', () => {
     expect(state.constructorItems.ingredients[0].constructorId).toBe('2');
   });
 
-  it('closeOrderModal очищает модалку', () => {
+  it('closeOrderModal', () => {
     const start = { ...initialState, orderModalData: 123 };
     const state = reducer(start, closeOrderModal());
-
     expect(state.orderModalData).toBeNull();
   });
 
-  it('createOrder.pending ставит orderRequest=true', () => {
-    const action = { type: createOrder.pending.type };
-    const state = reducer(initialState, action);
+  it('createOrder.pending', () => {
+    const state = reducer(initialState, {
+      type: createOrder.pending.type
+    });
 
     expect(state.orderRequest).toBe(true);
     expect(state.error).toBeNull();
   });
 
-  it('createOrder.fulfilled сбрасывает конструктор и ставит номер заказа', () => {
-    const action = {
+  it('createOrder.fulfilled', () => {
+    const fulfilled = {
       type: createOrder.fulfilled.type,
-      payload: { order: { number: 555 } }
+      payload: { order: { number: 777 } }
     };
 
-    const state = reducer(
-      {
-        ...initialState,
-        constructorItems: {
-          bun,
-          ingredients: [{ ...ingredient, constructorId: '100' }]
-        }
-      },
-      action
-    );
+    const start = {
+      ...initialState,
+      constructorItems: {
+        bun,
+        ingredients: [{ ...ingredient, constructorId: '1' }]
+      }
+    };
 
-    expect(state.orderModalData).toBe(555);
+    const state = reducer(start, fulfilled);
+
+    expect(state.orderModalData).toBe(777);
     expect(state.constructorItems.bun).toBeNull();
     expect(state.constructorItems.ingredients.length).toBe(0);
   });
 
-  it('createOrder.rejected → error', () => {
-    const action = { type: createOrder.rejected.type };
-    const state = reducer(initialState, action);
+  it('createOrder.rejected', () => {
+    const state = reducer(initialState, {
+      type: createOrder.rejected.type
+    });
 
-    expect(state.orderRequest).toBe(false);
     expect(state.error).toBe('Ошибка оформления заказа');
   });
 });

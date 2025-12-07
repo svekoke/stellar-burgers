@@ -2,24 +2,19 @@ import reducer, {
   connectUserOrders,
   disconnectUserOrders,
   setUserOrders,
-  fetchOrderByNumberThunk
+  fetchOrderByNumberThunk,
+  initialState
 } from './ordersFeedSlice';
+import { TOrder } from '../utils/types';
 
-const mockOrder = {
-  _id: '1',
-  name: 'Test Order',
+const mockOrder: TOrder = {
+  _id: 'order1',
   status: 'done',
+  name: 'Test Order',
+  createdAt: '2024-01-01T12:00:00Z',
+  updatedAt: '2024-01-01T12:00:00Z',
   number: 123,
-  createdAt: '',
-  updatedAt: '',
-  ingredients: []
-};
-
-const initialState = {
-  orders: [],
-  connected: false,
-  error: null,
-  orderByNumber: null
+  ingredients: ['item1', 'item2']
 };
 
 describe('ordersFeedSlice', () => {
@@ -32,7 +27,7 @@ describe('ordersFeedSlice', () => {
     expect(state.connected).toBe(true);
   });
 
-  it('disconnectUserOrders → connected=false + очистка orders', () => {
+  it('disconnectUserOrders → connected=false и orders очищены', () => {
     const start = {
       ...initialState,
       connected: true,
@@ -45,20 +40,18 @@ describe('ordersFeedSlice', () => {
     expect(state.orders).toEqual([]);
   });
 
-  it('setUserOrders → записывает массив заказов', () => {
+  it('setUserOrders → сохраняет заказы', () => {
     const state = reducer(initialState, setUserOrders([mockOrder]));
-
     expect(state.orders).toEqual([mockOrder]);
   });
 
-  it('fetchOrderByNumber.fulfilled → сохраняет orderByNumber', () => {
+  it('fetchOrderByNumberThunk.fulfilled → записывает orderByNumber', () => {
     const action = {
       type: fetchOrderByNumberThunk.fulfilled.type,
       payload: mockOrder
     };
 
     const state = reducer(initialState, action);
-
     expect(state.orderByNumber).toEqual(mockOrder);
   });
 });
