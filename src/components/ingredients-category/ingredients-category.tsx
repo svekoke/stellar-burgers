@@ -7,7 +7,7 @@ import { useAppSelector } from '../../services/store';
 export const IngredientsCategory = forwardRef<
   HTMLUListElement,
   TIngredientsCategoryProps
->(({ title, titleRef, ingredients }, ref) => {
+>(({ title, titleRef, ingredients, ...rest }, ref) => {
   // ингредиенты из конструктора
   const constructorItems = useAppSelector(
     (state) => state.order.constructorItems
@@ -17,12 +17,10 @@ export const IngredientsCategory = forwardRef<
   const ingredientsCounters = useMemo(() => {
     const counters: Record<string, number> = {};
 
-    // начинка/соусы
     constructorItems.ingredients.forEach((item: TIngredient) => {
       counters[item._id] = (counters[item._id] || 0) + 1;
     });
 
-    // булка — всегда 2
     if (constructorItems.bun) {
       counters[constructorItems.bun._id] = 2;
     }
@@ -37,6 +35,7 @@ export const IngredientsCategory = forwardRef<
       ingredients={ingredients}
       ingredientsCounters={ingredientsCounters}
       ref={ref}
+      {...rest} // ← ВОТ ТУТ ДОЛЖНО БЫТЬ!
     />
   );
 });

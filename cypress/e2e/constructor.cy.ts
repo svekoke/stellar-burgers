@@ -22,18 +22,15 @@ describe('Конструктор бургера — интеграционные
   });
 
   // КАТЕГОРИИ
-
   it('Отображаются категории ингредиентов', () => {
-    cy.contains('Булки').should('exist');
-    cy.contains('Соусы').should('exist');
-    cy.contains('Начинки').should('exist');
+    cy.get('[data-cy="bun-ingredients"]').should('exist');
+    cy.get('[data-cy="main-ingredients"]').should('exist');
+    cy.get('[data-cy="sauce-ingredients"]').should('exist');
   });
 
   // ДОБАВЛЕНИЕ БУЛКИ
-
   it('Добавление булки по клику', () => {
-    cy.contains('Булки')
-      .parents('section')
+    cy.get('[data-cy="bun-ingredients"]')
       .find('button:contains("Добавить")')
       .first()
       .click();
@@ -44,11 +41,9 @@ describe('Конструктор бургера — интеграционные
     getConstructorItems().should('have.length', 0);
   });
 
-  // ДОБАВЛЕНИЕ ИНГРЕДИЕНТА
-
+  // ДОБАВЛЕНИЕ ИНГРЕДИЕНТА (соуса)
   it('Добавление ингредиента (соуса)', () => {
-    cy.contains('Соусы')
-      .parents('section')
+    cy.get('[data-cy="sauce-ingredients"]')
       .find('button:contains("Добавить")')
       .first()
       .click();
