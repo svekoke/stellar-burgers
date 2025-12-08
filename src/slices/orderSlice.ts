@@ -43,12 +43,12 @@ const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    // === УСТАНОВИТЬ БУЛКУ ===
+    // УСТАНОВИТЬ БУЛКУ
     setBun(state, action: PayloadAction<TIngredient>) {
       state.constructorItems.bun = action.payload;
     },
 
-    // === ДОБАВИТЬ ИНГРЕДИЕНТ ===
+    //ДОБАВИТЬ ИНГРЕДИЕНТ
     addIngredient: {
       reducer(
         state,
@@ -66,12 +66,12 @@ const orderSlice = createSlice({
       }
     },
 
-    // === УДАЛИТЬ ПО INDEX (как у тебя в UI) ===
+    //УДАЛИТЬ ПО INDEX
     removeIngredient(state, action: PayloadAction<number>) {
       state.constructorItems.ingredients.splice(action.payload, 1);
     },
 
-    // === ПЕРЕТАСКИВАНИЕ ===
+    //ПЕРЕТАСКИВАНИЕ
     moveIngredient(
       state,
       action: PayloadAction<{ fromIndex: number; toIndex: number }>

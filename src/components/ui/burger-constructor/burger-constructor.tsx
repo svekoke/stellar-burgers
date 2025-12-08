@@ -100,7 +100,6 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
 
     {orderModalData && (
       <Modal onClose={closeOrderModal} title={''}>
-        {/* orderModalData — это ЧИСЛО */}
         <OrderDetailsUI orderNumber={orderModalData} />
       </Modal>
     )}

@@ -35,7 +35,7 @@ export const IngredientsCategory = forwardRef<
       ingredients={ingredients}
       ingredientsCounters={ingredientsCounters}
       ref={ref}
-      {...rest} // ← ВОТ ТУТ ДОЛЖНО БЫТЬ!
+      {...rest} 
     />
   );
 });
