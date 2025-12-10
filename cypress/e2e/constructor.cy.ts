@@ -104,8 +104,6 @@ describe('Конструктор бургера — интеграционные
     getConstructorItems().should('have.length', 0);
   });
 
-  // --- НОВЫЕ ДВА ТЕСТА (вставлены внутрь describe!) ---
-
   it('Добавляем ингредиент — проверяем что выбранный ингредиент добавился', () => {
     cy.get('[data-cy="sauce-ingredients"]')
       .find('[data-cy="ingredient-card"]')
