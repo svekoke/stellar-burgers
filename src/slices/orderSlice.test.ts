@@ -4,10 +4,16 @@ import reducer, {
   moveIngredient,
   closeOrderModal,
   createOrder,
-  initialState
+  initialState,
+  setBun
 } from './orderSlice';
 
-(global as any).crypto = { randomUUID: () => 'uuid-test' };
+Object.defineProperty(global, 'crypto', {
+  value: {
+    randomUUID: () => 'uuid-test'
+  },
+  writable: true
+});
 
 const ingredient = {
   _id: 'ing1',
@@ -30,8 +36,8 @@ describe('orderSlice', () => {
     expect(reducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });
 
-  it('addIngredient добавляет булку', () => {
-    const state = reducer(initialState, addIngredient(bun));
+  it('setBun добавляет булку', () => {
+    const state = reducer(initialState, setBun(bun));
     expect(state.constructorItems.bun!._id).toBe('bun1');
   });
 
