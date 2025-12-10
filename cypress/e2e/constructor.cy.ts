@@ -1,12 +1,6 @@
 /// <reference types="cypress" />
 
-const getConstructorSection = () => cy.get('main').find('section').eq(1);
-
-const getConstructorItems = () =>
-  getConstructorSection()
-    .find('div.constructor-element')
-    .not('.constructor-element_pos_top')
-    .not('.constructor-element_pos_bottom');
+const getConstructorItems = () => cy.get('[data-cy="constructor-item"]');
 
 describe('Конструктор бургера — интеграционные тесты', () => {
   beforeEach(() => {
@@ -15,7 +9,7 @@ describe('Конструктор бургера — интеграционные
     );
     cy.intercept('GET', '**/auth/user', { fixture: 'user.json' }).as('user');
 
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
 
     cy.wait('@ingredients');
     cy.wait('@user');
@@ -52,18 +46,15 @@ describe('Конструктор бургера — интеграционные
   });
 
   // УДАЛЕНИЕ ИНГРЕДИЕНТА
-
   it('Удаление ингредиента', () => {
     // БУЛКА
-    cy.contains('Булки')
-      .parents('section')
+    cy.get('[data-cy="bun-ingredients"]')
       .find('button:contains("Добавить")')
       .first()
       .click();
 
     // СОУС
-    cy.contains('Соусы')
-      .parents('section')
+    cy.get('[data-cy="sauce-ingredients"]')
       .find('button:contains("Добавить")')
       .first()
       .click();
@@ -73,22 +64,20 @@ describe('Конструктор бургера — интеграционные
     // УДАЛЕНИЕ
     getConstructorItems()
       .first()
-      .find('.constructor-element__action')
+      .find('.constructor-element__action svg')
       .click({ force: true });
 
     getConstructorItems().should('have.length', 0);
   });
 
   // ОТКРЫТИЕ ДЕТАЛЕЙ
-
   it('Открытие страницы ингредиента', () => {
-    cy.contains('Булки').parents('section').find('a').first().click();
+    cy.get('[data-cy="bun-ingredients"]').find('a').first().click();
 
     cy.url().should('include', '/ingredients/');
   });
 
   // НЕАВТОРИЗАЦИЯ
-
   it('Неавторизованный user → редирект на /login', () => {
     cy.intercept('GET', '**/auth/user', { statusCode: 401 }).as('unauth');
     cy.intercept('GET', '**/ingredients', { fixture: 'ingredients.json' }).as(
@@ -100,9 +89,7 @@ describe('Конструктор бургера — интеграционные
     cy.wait('@ingredients2');
     cy.wait('@unauth');
 
-    //  булка
-    cy.contains('Булки')
-      .parents('section')
+    cy.get('[data-cy="bun-ingredients"]')
       .find('button:contains("Добавить")')
       .first()
       .click();
@@ -113,36 +100,29 @@ describe('Конструктор бургера — интеграционные
   });
 
   // СОЗДАНИЕ ЗАКАЗА
-
   it('Создание заказа — успешный сценарий', () => {
     cy.intercept('POST', '**/orders', { fixture: 'order.json' }).as(
       'makeOrder'
     );
 
-    // булкА
-    cy.contains('Булки')
-      .parents('section')
+    cy.get('[data-cy="bun-ingredients"]')
       .find('button:contains("Добавить")')
       .first()
       .click();
 
-    // соус
-    cy.contains('Соусы')
-      .parents('section')
+    cy.get('[data-cy="sauce-ingredients"]')
       .find('button:contains("Добавить")')
       .first()
       .click();
 
     getConstructorItems().should('have.length', 1);
 
-    // Подтверждаем заказ
     cy.contains('Оформить заказ').click();
     cy.wait('@makeOrder');
 
-    // Номер заказа
     cy.contains('12345').should('exist');
 
-    cy.get('#modals button').first().click({ force: true });
+    cy.get('[aria-label="close-modal"]').click({ force: true });
 
     getConstructorItems().should('have.length', 0);
   });
