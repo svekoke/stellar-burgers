@@ -34,7 +34,7 @@ const App = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // background хранит предыдущую страницу — используется для модалок
+  //  для модалок
   const state = location.state as { background?: Location };
 
   // Умное закрытие модального окна

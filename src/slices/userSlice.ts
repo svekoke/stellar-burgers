@@ -13,7 +13,7 @@ interface User {
   name: string;
 }
 
-interface UserState {
+export interface UserState {
   user: User | null;
   isAuthenticated: boolean;
   isAuthChecked: boolean;
@@ -21,7 +21,7 @@ interface UserState {
   error: string | null;
 }
 
-const initialState: UserState = {
+export const initialState: UserState = {
   user: null,
   isAuthenticated: false,
   isAuthChecked: false,
@@ -29,7 +29,6 @@ const initialState: UserState = {
   error: null
 };
 
-// REGISTER
 export const registerUser = createAsyncThunk(
   'user/register',
   async (form: { email: string; password: string; name: string }) => {
@@ -42,7 +41,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// LOGIN
 export const loginUser = createAsyncThunk(
   'user/login',
   async (form: { email: string; password: string }) => {
@@ -55,7 +53,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// FIXED — GET USER без спама ошибок
 export const getUser = createAsyncThunk(
   'user/get',
   async (_, { rejectWithValue }) => {
@@ -68,7 +65,6 @@ export const getUser = createAsyncThunk(
   }
 );
 
-// UPDATE USER
 export const updateUser = createAsyncThunk(
   'user/update',
   async (form: { name: string; email: string; password?: string }) => {
@@ -77,7 +73,6 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-// LOGOUT
 export const logoutUser = createAsyncThunk('user/logout', async () => {
   await logoutApi();
   deleteCookie('accessToken');

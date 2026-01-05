@@ -3,7 +3,7 @@ import { orderBurgerApi } from '../utils/burger-api';
 import { TIngredient } from '../utils/types';
 import { RootState } from '../services/store';
 
-interface OrderState {
+export interface OrderState {
   orderRequest: boolean;
   orderModalData: number | null;
   constructorItems: {
@@ -13,7 +13,7 @@ interface OrderState {
   error: string | null;
 }
 
-const initialState: OrderState = {
+export const initialState: OrderState = {
   orderRequest: false,
   orderModalData: null,
   constructorItems: {
@@ -43,18 +43,18 @@ const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
+    // УСТАНОВИТЬ БУЛКУ
+    setBun(state, action: PayloadAction<TIngredient>) {
+      state.constructorItems.bun = action.payload;
+    },
+
+    //ДОБАВИТЬ ИНГРЕДИЕНТ
     addIngredient: {
       reducer(
         state,
         action: PayloadAction<TIngredient & { constructorId: string }>
       ) {
-        const ingredient = action.payload;
-
-        if (ingredient.type === 'bun') {
-          state.constructorItems.bun = ingredient;
-        } else {
-          state.constructorItems.ingredients.push(ingredient);
-        }
+        state.constructorItems.ingredients.push(action.payload);
       },
       prepare(ingredient: TIngredient) {
         return {
@@ -66,10 +66,12 @@ const orderSlice = createSlice({
       }
     },
 
+    //УДАЛИТЬ ПО INDEX
     removeIngredient(state, action: PayloadAction<number>) {
       state.constructorItems.ingredients.splice(action.payload, 1);
     },
 
+    //ПЕРЕТАСКИВАНИЕ
     moveIngredient(
       state,
       action: PayloadAction<{ fromIndex: number; toIndex: number }>
@@ -93,13 +95,8 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.orderRequest = false;
-
         state.orderModalData = action.payload.order.number;
-
-        state.constructorItems = {
-          bun: null,
-          ingredients: []
-        };
+        state.constructorItems = { bun: null, ingredients: [] };
       })
       .addCase(createOrder.rejected, (state) => {
         state.orderRequest = false;
@@ -109,6 +106,7 @@ const orderSlice = createSlice({
 });
 
 export const {
+  setBun,
   addIngredient,
   removeIngredient,
   moveIngredient,

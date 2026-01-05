@@ -3,14 +3,14 @@ import { getOrderByNumberApi } from '../utils/burger-api';
 import { TOrder } from '../utils/types';
 import { RootState } from '../services/store';
 
-interface OrdersFeedState {
+export interface OrdersFeedState {
   orders: TOrder[];
   connected: boolean;
   error: string | null;
   orderByNumber: TOrder | null;
 }
 
-const initialState: OrdersFeedState = {
+export const initialState: OrdersFeedState = {
   orders: [],
   connected: false,
   error: null,

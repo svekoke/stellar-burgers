@@ -3,7 +3,7 @@ import { getFeedsApi } from '../utils/burger-api';
 import { TOrder } from '../utils/types';
 import { RootState } from '../services/store';
 
-type FeedState = {
+export type FeedState = {
   orders: TOrder[];
   total: number;
   totalToday: number;
@@ -11,7 +11,7 @@ type FeedState = {
   error: string | null;
 };
 
-const initialState: FeedState = {
+export const initialState: FeedState = {
   orders: [],
   total: 0,
   totalToday: 0,

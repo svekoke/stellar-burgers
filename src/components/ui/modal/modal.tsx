@@ -1,5 +1,4 @@
 import { FC, memo } from 'react';
-
 import styles from './modal.module.css';
 
 import { CloseIcon } from '@zlden/react-developer-burger-ui-components';
@@ -14,13 +13,22 @@ export const ModalUI: FC<TModalUIProps> = memo(
           <h3 className={`${styles.title} text text_type_main-large`}>
             {title}
           </h3>
-          <button className={styles.button} type='button'>
-            <CloseIcon type='primary' onClick={onClose} />
+
+          <button
+            className={styles.button}
+            type='button'
+            aria-label='close-modal'
+            onClick={onClose}
+            data-cy='modal-close'
+          >
+            <CloseIcon type='primary' />
           </button>
         </div>
+
         <div className={styles.content}>{children}</div>
       </div>
-      <ModalOverlayUI onClick={onClose} />
+
+      <ModalOverlayUI onClick={onClose} data-cy='modal-overlay' />
     </>
   )
 );
